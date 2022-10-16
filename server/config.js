@@ -1,0 +1,1 @@
+export const secret = "$2b$10$MUPGE0ZBR7tYlSVDnkeuPO3ki";
