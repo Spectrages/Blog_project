@@ -21,6 +21,9 @@ export const Header = () => {
     <div className={styles.root}>
       <Container maxWidth="lg">
         <div className={styles.inner}>
+          <Link to='/' className={styles.logo}>
+            <div>SPECTRAGES BLOG</div>
+          </Link>
           <div className={styles.buttons}>
             {isAuth ? (
               <>

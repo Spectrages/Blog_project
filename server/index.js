@@ -6,11 +6,12 @@ import mongoose from 'mongoose';
 
 import { registerValidation, loginValidation } from "./validations/auth.js";
 
-import { UserController, PostController } from './controllers/index.js'
+import { UserController, PostController, CommentController } from './controllers/index.js'
 
 import { postCreateValidation } from "./validations/post.js";
 
 import { checkAuth, handleValidationErrors }  from './utils/index.js'
+import {commentCreateValidation} from "./validations/comment.js";
 
 const PORT = process.env.PORT || 5000;
 
@@ -54,6 +55,9 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 app.get('/tags', PostController.getLastTags);
 app.get('posts/tags', PostController.getLastTags);
 
+app.post('/posts/:id/add-comment', checkAuth, commentCreateValidation, CommentController.createComment);
+app.get('/posts/:id/get-comment', CommentController.getAllComments);
+//app.delete('posts/delete-comment/:id', checkAuth, CommentController.removeComment);
 
 app.get('/posts', PostController.getAll);
 app.get('/posts/:id', PostController.getOne);

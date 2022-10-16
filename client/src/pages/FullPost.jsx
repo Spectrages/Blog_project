@@ -24,6 +24,9 @@ export const FullPost = () => {
             })
     }, []);
 
+    useEffect(() => {
+
+    },[]);
     if(isLoading) {
         return <Post isLoading={isLoading} isFullPost />
     }
