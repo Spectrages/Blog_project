@@ -18,8 +18,6 @@ export const FullPost = () => {
     const [user, setUser] = useState();
     const {id} = useParams();
     const userData = useSelector(state => Boolean(state.auth.data));
-    console.log(comments);
-
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -46,7 +44,7 @@ export const FullPost = () => {
                 console.error(error);
                 alert("Error getting comments");
             });
-    }, [postLoading]);
+    }, []);
 
     if (postLoading) {
         return <Post isLoading={postLoading} isFullPost/>
