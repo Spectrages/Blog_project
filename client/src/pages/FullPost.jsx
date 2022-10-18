@@ -1,72 +1,80 @@
-import React, { useState, useEffect } from "react";
-import  { useParams } from "react-router-dom"
-import { Post } from "../components/Post";
-import { Index } from "../components/AddComment";
-import { CommentsBlock } from "../components/CommentsBlock";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import React, {useState, useEffect} from "react";
+import {useParams} from "react-router-dom"
+import {Post} from "../components/Post";
+import {Index} from "../components/AddComment";
+import {CommentsBlock} from "../components/CommentsBlock";
+import {ReactMarkdown} from "react-markdown/lib/react-markdown";
 
 import axios from '../axios'
+import {fetchLogin} from "../redux/slices/auth";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchComments} from "../redux/slices/posts";
 
 export const FullPost = () => {
     const [data, setData] = useState();
-    const [isLoading, setIsLoading] = useState(true);
+    const [comments, setComments] = useState();
+    const [postLoading, setPostLoading] = useState(true);
+    const [commentsLoading, setCommentsLoading] = useState(true);
+    const [user, setUser] = useState();
     const {id} = useParams();
+    const userData = useSelector(state => Boolean(state.auth.data));
+    console.log(comments);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         axios.get(`/posts/${id}`)
             .then((response) => {
                 setData(response.data);
-                setIsLoading(false);
+                setPostLoading(false);
             })
             .catch((error) => {
                 console.error(error);
                 alert("Error getting article");
-            })
+            });
+        dispatch(fetchLogin());
     }, []);
 
-    useEffect(() => {
 
-    },[]);
-    if(isLoading) {
-        return <Post isLoading={isLoading} isFullPost />
+    useEffect(() => {
+        axios.get(`/posts/${id}/get-comment`)
+            .then((response) => {
+                setComments(response.data);
+                setCommentsLoading(false);
+            })
+            .catch((error) => {
+                console.error(error);
+                alert("Error getting comments");
+            });
+    }, [postLoading]);
+
+    if (postLoading) {
+        return <Post isLoading={postLoading} isFullPost/>
     }
 
-  return (
+
+return (
     <React.Fragment>
-      <Post
-        _id={data._id}
-        title={data.title}
-        imageUrl={data.imageUrl ? `http://localhost:5000${data.imageUrl}` : ''}
-        user={data.user}
-        createdAt={data.createdAt}
-        viewsCount={data.viewsCount}
-        commentsCount={3}
-        tags={data.tags}
-        isFullPost
-      >
-        <ReactMarkdown children={data.text}/>
-      </Post>
-      <CommentsBlock
-        items={[
-          {
-            user: {
-              fullName: "Вася Пупкин",
-              avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-            },
-            text: "Это тестовый комментарий 555555",
-          },
-          {
-            user: {
-              fullName: "Иван Иванов",
-              avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-            },
-            text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-          },
-        ]}
-        isLoading={false}
-      >
-        <Index />
-      </CommentsBlock>
+        <Post
+            _id={data._id}
+            title={data.title}
+            imageUrl={data.imageUrl ? `http://localhost:5000${data.imageUrl}` : ''}
+            user={data.user}
+            createdAt={data.createdAt}
+            viewsCount={data.viewsCount}
+            commentsCount={3}
+            tags={data.tags}
+            isFullPost
+        >
+            <ReactMarkdown children={data.text}/>
+        </Post>
+        <CommentsBlock
+            items={comments}
+            isLoading={commentsLoading}
+            isAuth={Boolean(userData)}
+        >
+            {Boolean(userData) ? <Index user={user}/> : ''}
+        </CommentsBlock>
     </React.Fragment>
-  );
+);
 };

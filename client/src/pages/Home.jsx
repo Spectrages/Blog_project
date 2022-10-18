@@ -8,19 +8,19 @@ import {Post} from '../components/Post';
 import {TagsBlock} from '../components/TagsBlock';
 import {CommentsBlock} from '../components/CommentsBlock';
 import {fetchPosts, fetchTags} from "../redux/slices/posts";
+import {fetchLogin} from "../redux/slices/auth";
 
 export const Home = () => {
 
     const [value, setValue] = useState(0);
-
     const dispatch = useDispatch();
     const userData = useSelector(state => state.auth.data);
     const {posts, tags} = useSelector(state => state.posts);
-    //={userData?._id === obj.user._id}
     const isPostLoading = posts.status === 'loading';
     const isTagsLoading = tags.status === 'loading';
 
     useEffect(() => {
+        dispatch(fetchLogin());
         dispatch(fetchPosts());
         dispatch(fetchTags());
     }, []);
@@ -57,7 +57,7 @@ export const Home = () => {
                                 user={obj.user}
                                 createdAt={obj.createdAt}
                                 viewsCount={obj.viewsCount}
-                                commentsCount={3}
+                                commentsCount={obj.commentCount}
                                 tags={obj.tags}
                                 isEditable={userData?._id === obj.user?._id}
                             />)
@@ -65,25 +65,10 @@ export const Home = () => {
                 </Grid>
                 <Grid xs={4} item>
                     <TagsBlock items={tags.items} isLoading={isTagsLoading}/>
-                    <CommentsBlock
-                        items={[
-                            {
-                                user: {
-                                    fullName: 'Вася Пупкин',
-                                    avatarUrl: 'https://mui.com/static/images/avatar/1.jpg',
-                                },
-                                text: 'Это тестовый комментарий',
-                            },
-                            {
-                                user: {
-                                    fullName: 'Иван Иванов',
-                                    avatarUrl: 'https://mui.com/static/images/avatar/2.jpg',
-                                },
-                                text: 'When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top',
-                            },
-                        ]}
-                        isLoading={false}
-                    />
+                    {/*<CommentsBlock*/}
+                    {/*    items={comments.items}*/}
+                    {/*    isLoading={isCommentsLoading}*/}
+                    {/*/>*/}
                 </Grid>
             </Grid>
         </React.Fragment>

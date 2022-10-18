@@ -6,23 +6,24 @@ import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 
-export const Index = () => {
+export const Index = (user) => {
+
   return (
     <>
       <div className={styles.root}>
         <Avatar
           classes={{ root: styles.avatar }}
-          src="https://mui.com/static/images/avatar/5.jpg"
+          src={user.avatarUrl}
         />
         <div className={styles.form}>
           <TextField
-            label="Написать комментарий"
+            label="Write a comment"
             variant="outlined"
             maxRows={10}
             multiline
             fullWidth
           />
-          <Button variant="contained">Отправить</Button>
+          <Button variant="contained">Send</Button>
         </div>
       </div>
     </>

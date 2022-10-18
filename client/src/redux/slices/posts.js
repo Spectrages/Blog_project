@@ -17,7 +17,8 @@ export const fetchRemovePost = createAsyncThunk('posts/fetchRemovePost', async (
     axios.delete(`/posts/${id}`));
 
 export const fetchComments = createAsyncThunk('posts/fetchComments', async (id) => {
-    const {data} = await axios.get(`/posts/${id}/get-comment`)
+    const {data} = await axios.get(`/posts/${id}/get-comment`);
+    console.log(data);
     return data
 });
 
@@ -27,6 +28,10 @@ const initialState = {
         status: 'loading'
     },
     tags: {
+        items: [],
+        status: 'loading'
+    },
+    comments: {
         items: [],
         status: 'loading'
     }
