@@ -23,6 +23,7 @@ export const Index = (user) => {
         }
     };
 
+
     return (
         <>
             <div className={styles.root}>

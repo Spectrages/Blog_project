@@ -8,7 +8,6 @@ import {ReactMarkdown} from "react-markdown/lib/react-markdown";
 import axios from '../axios'
 import {fetchLogin} from "../redux/slices/auth";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchComments} from "../redux/slices/posts";
 
 export const FullPost = () => {
     const [data, setData] = useState();
@@ -44,7 +43,7 @@ export const FullPost = () => {
                 console.error(error);
                 alert("Error getting comments");
             });
-    }, []);
+    }, [comments]);
 
     if (postLoading) {
         return <Post isLoading={postLoading} isFullPost/>
@@ -60,7 +59,7 @@ return (
             user={data.user}
             createdAt={data.createdAt}
             viewsCount={data.viewsCount}
-            commentsCount={3}
+            commentsCount={data.commentCount}
             tags={data.tags}
             isFullPost
         >
