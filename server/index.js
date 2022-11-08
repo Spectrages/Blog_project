@@ -13,7 +13,7 @@ import {commentCreateValidation} from "./validations/comment.js";
 const PORT = process.env.PORT || 5000;
 
 mongoose
-    .connect("mongodb+srv://spectrages:Spectrages15011997@cluster0.orfyg2s.mongodb.net/forumProject?retryWrites=true&w=majority")
+    .connect(process.env.MONGODB_URI)
     .then(() => console.log('DB ok'))
     .catch((error) => console.log(`DB connect error: ${error}`));
 
