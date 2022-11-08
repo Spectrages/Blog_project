@@ -7,10 +7,10 @@ import Button from "@mui/material/Button";
 import axios from "../../axios";
 import {useParams} from "react-router-dom";
 
-export const Index = (user) => {
+export const Index = ({user}) => {
     const {id} = useParams();
     const [text, setText] = useState('');
-
+    console.log(user)
     const onSubmit = async () => {
         try {
             const fields = {
@@ -22,14 +22,13 @@ export const Index = (user) => {
             alert('Error posting comment')
         }
     };
-
-
     return (
         <>
             <div className={styles.root}>
                 <Avatar
                     classes={{root: styles.avatar}}
-                    src={user.avatarUrl}
+                    src={user.avatarUrl ? `http://localhost:5000${user.avatarUrl}` : '/noavatar.png'}
+                    alt={user.fullName}
                 />
                 <div className={styles.form}>
                     <TextField

@@ -5,11 +5,8 @@ import cors from "cors"
 import mongoose from 'mongoose';
 
 import { registerValidation, loginValidation } from "./validations/auth.js";
-
 import { UserController, PostController, CommentController } from './controllers/index.js'
-
 import { postCreateValidation } from "./validations/post.js";
-
 import { checkAuth, handleValidationErrors }  from './utils/index.js'
 import {commentCreateValidation} from "./validations/comment.js";
 
@@ -27,10 +24,6 @@ app.use(cors({
 }));
 app.use('/uploads', express.static('uploads'));
 
-app.get('/', (req, res) => {
-    res.send("Hello world")
-});
-
 const storage = multer.diskStorage({
     destination: (_, __, callback) => {
         callback(null, 'uploads');
@@ -46,7 +39,7 @@ app.post('/auth/login', loginValidation, handleValidationErrors, UserController.
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
 
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+app.post('/upload', upload.single('image'), (req, res) => {
     res.json({
         url: `/uploads/${req.file.originalname}`,
     });

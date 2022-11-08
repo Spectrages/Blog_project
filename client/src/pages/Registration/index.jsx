@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
@@ -10,26 +10,43 @@ import {useDispatch, useSelector} from "react-redux";
 import {fetchRegister, selectIsAuth} from "../../redux/slices/auth";
 import {useForm} from "react-hook-form";
 import {Navigate} from "react-router-dom";
+import axios from "../../axios";
 
 export const Registration = () => {
+
+    const [avatarUrl, setAvatarUrl] = useState('');
+    const inputFileRef = useRef({});
 
     const isAuth = useSelector(selectIsAuth);
     const dispatch = useDispatch();
 
+    const handleChangeFile = async (event) => {
+        try {
+            const formData = new FormData();
+            const file = event.target.files[0];
+            formData.append('image', file);
+            const {data} = await axios.post('/upload', formData);
+            setAvatarUrl(data.url);
+        } catch (error) {
+            console.error(error)
+        }
+    };
     const {
         register,
         handleSubmit,
         formState: {errors, isValid},
     } = useForm({
         defaultValues: {
-            fullName: 'Гачи бой',
-            email: 'gachi@gmail.com',
-            password: '12345678',
+            avatarUrl: '',
+            fullName: '',
+            email: '',
+            password: '',
         },
         mode: 'onChange'
     });
 
     const onSubmit = async (values) => {
+        values.avatarUrl = avatarUrl;
         const data = await dispatch(fetchRegister(values));
         if (!data.payload) {
             alert("Failed to register");
@@ -50,7 +67,23 @@ export const Registration = () => {
                     Create an account
                 </Typography>
                 <div className={styles.avatar}>
-                    <Avatar sx={{width: 100, height: 100}}/>
+                    <input
+                        ref={inputFileRef}
+                        type="file"
+                        onChange={handleChangeFile}
+                        hidden
+                    />
+                    {avatarUrl ?
+                        <img
+                            onClick={() => inputFileRef.current.click()}
+                            src={`http://localhost:5000${avatarUrl}`}
+                            style={{width: '100px'}}
+                            alt="Uploaded"
+                            {...register('avatarUrl')}
+                        />
+                    :
+                        <Avatar onClick={() => inputFileRef.current.click()} className={styles.avatar_pic} sx={{width: 100, height: 100}}/>
+                    }
                 </div>
                 <TextField
                     className={styles.field}

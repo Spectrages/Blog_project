@@ -20,3 +20,15 @@
   justify-content: center;
   margin-bottom: 30px;
 }
+
+.avatar_pic{
+  &:hover{
+    border: 1px solid gray;
+    background-color: snow;
+    color: gray;
+  }
+  &:active{
+    background-color: snow;
+    color: black;
+  }
+}

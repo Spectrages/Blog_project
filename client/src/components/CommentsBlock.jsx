@@ -10,7 +10,7 @@ import List from "@mui/material/List";
 import Skeleton from "@mui/material/Skeleton";
 
 export const CommentsBlock = ({ items, children, isLoading = true}) => {
-
+    console.log(items)
   return (
     <SideBlock title="Comments">
       <List>
@@ -21,7 +21,10 @@ export const CommentsBlock = ({ items, children, isLoading = true}) => {
                 {isLoading ? (
                   <Skeleton variant="circular" width={40} height={40} />
                 ) : (
-                  <Avatar alt={obj.user.fullName} src={obj.user.avatarUrl} />
+                  <Avatar
+                      alt={obj.user.fullName}
+                      src={obj.user.avatarUrl ? `http://localhost:5000${obj.user.avatarUrl}` : '/noavatar.png'}
+                  />
                 )}
               </ListItemAvatar>
               {isLoading ? (

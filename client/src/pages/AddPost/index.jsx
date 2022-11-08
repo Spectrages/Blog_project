@@ -16,7 +16,7 @@ export const AddPost = () => {
     const {id} = useParams();
     const navigate = useNavigate();
     const isAuth = useSelector(selectIsAuth);
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
     const [text, setText] = useState('');
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState('');
@@ -53,7 +53,7 @@ export const AddPost = () => {
                     setTitle(data.title);
                     setText(data.text);
                     setImageUrl(data.imageUrl);
-                    setTags(data.tags.join(','));
+                    setTags(data.tags.join(',') && data.tags.join(' '));
                 })
                 .catch((error) => {
                     console.error(error);

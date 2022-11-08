@@ -20,6 +20,16 @@ export const FullPost = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        axios.get(`/auth/me`)
+            .then((response) => {
+                setUser(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    useEffect(() => {
         axios.get(`/posts/${id}`)
             .then((response) => {
                 setData(response.data);
@@ -43,13 +53,11 @@ export const FullPost = () => {
                 console.error(error);
                 alert("Error getting comments");
             });
-    }, [comments]);
+    }, []);
 
     if (postLoading) {
         return <Post isLoading={postLoading} isFullPost/>
     }
-
-
 return (
     <React.Fragment>
         <Post

@@ -55,7 +55,7 @@ export const create = async (req, res) => {
             title: req.body.title,
             text: req.body.text,
             imageUrl: req.body.imageUrl,
-            tags: req.body.tags.toString().split(','),
+            tags: req.body.tags.toString().split(',') && req.body.tags.toString().split(' '),
             user: req.userId,
             createdAt: new Date().toLocaleString()
         });
@@ -104,7 +104,7 @@ export const update = async (req, res) => {
             text: req.body.text,
             imageUrl: req.body.imageUrl,
             user: req.userId,
-            tags: req.body.tags.toString().split(','),
+            tags: req.body.tags.toString().split(',') && req.body.tags.toString().split(' '),
             });
             res.json({
                 success: true

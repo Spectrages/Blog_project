@@ -18,7 +18,6 @@ export const Home = () => {
     const {posts, tags} = useSelector(state => state.posts);
     const isPostLoading = posts.status === 'loading';
     const isTagsLoading = tags.status === 'loading';
-
     useEffect(() => {
         dispatch(fetchLogin());
         dispatch(fetchPosts());
@@ -27,11 +26,18 @@ export const Home = () => {
 
     const handleChange = (event, value) => {
         event.stopPropagation();
-        if(value > 0) {
+        if (value > 0) {
             setValue(0)
-        }
-        else {
+        } else {
             setValue(1);
+        }
+    };
+
+    const popularPosts = (posts) => {
+        if(posts.length > 0) {
+            let copy = Object.assign([], posts);
+            copy.sort((a, b) => a.viewsCount < b.viewsCount);
+            return copy;
         }
     };
 
@@ -48,9 +54,22 @@ export const Home = () => {
             </Tabs>
             <Grid container spacing={4}>
                 <Grid xs={8} item>
-                    {(isPostLoading ? [...Array(5)] : posts.items).map((obj, index) => isPostLoading
+                    {value === 0 ? (isPostLoading ? [...Array(5)] : posts.items).map((obj, index) => isPostLoading
                         ? (<Post key={index} isLoading={true}/>)
                         : (<Post
+                            _id={obj._id}
+                            title={obj.title}
+                            imageUrl={obj.imageUrl ? `http://localhost:5000${obj.imageUrl}` : ''}
+                            user={obj.user}
+                            createdAt={obj.createdAt}
+                            viewsCount={obj.viewsCount}
+                            commentsCount={obj.commentCount}
+                            tags={obj.tags}
+                            isEditable={userData?._id === obj.user?._id}
+                        />)).reverse()
+                        :
+                        popularPosts(posts.items).map((obj) => (
+                            <Post
                                 _id={obj._id}
                                 title={obj.title}
                                 imageUrl={obj.imageUrl ? `http://localhost:5000${obj.imageUrl}` : ''}
@@ -60,8 +79,9 @@ export const Home = () => {
                                 commentsCount={obj.commentCount}
                                 tags={obj.tags}
                                 isEditable={userData?._id === obj.user?._id}
-                            />)
-                    )}
+                            />))
+                    }
+
                 </Grid>
                 <Grid xs={4} item>
                     <TagsBlock items={tags.items} isLoading={isTagsLoading}/>
