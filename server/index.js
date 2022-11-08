@@ -60,7 +60,7 @@ app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors,
 
 
 const start = () => {
-    app.listen(PORT, () => console.log(`server started on port ${PORT}`))
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
 };
 
 start();
