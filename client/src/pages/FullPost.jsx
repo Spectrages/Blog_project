@@ -53,7 +53,7 @@ export const FullPost = () => {
                 console.error(error);
                 alert("Error getting comments");
             });
-    }, []);
+    }, [comments]);
 
     if (postLoading) {
         return <Post isLoading={postLoading} isFullPost/>
