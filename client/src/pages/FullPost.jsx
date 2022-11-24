@@ -8,16 +8,19 @@ import {ReactMarkdown} from "react-markdown/lib/react-markdown";
 import axios from '../axios'
 import {fetchLogin} from "../redux/slices/auth";
 import {useDispatch, useSelector} from "react-redux";
-
+//${process.env.REACT_APP_API_URL}
 export const FullPost = () => {
     const [data, setData] = useState();
+    const [counterComments, setCounterComments] = useState(0);
     const [comments, setComments] = useState();
     const [postLoading, setPostLoading] = useState(true);
     const [commentsLoading, setCommentsLoading] = useState(true);
+    const [likes, setLikes] = useState(0);
     const [user, setUser] = useState();
     const {id} = useParams();
     const userData = useSelector(state => Boolean(state.auth.data));
     const dispatch = useDispatch();
+    console.log(likes);
 
     useEffect(() => {
         axios.get(`/auth/me`)
@@ -33,6 +36,7 @@ export const FullPost = () => {
         axios.get(`/posts/${id}`)
             .then((response) => {
                 setData(response.data);
+                setLikes(response.data.postLikes.length)
                 setPostLoading(false);
             })
             .catch((error) => {
@@ -47,17 +51,21 @@ export const FullPost = () => {
         axios.get(`/posts/${id}/get-comment`)
             .then((response) => {
                 setComments(response.data);
+                setCounterComments(response.data.length);
                 setCommentsLoading(false);
             })
             .catch((error) => {
                 console.error(error);
                 alert("Error getting comments");
             });
-    }, [comments]);
+    }, [setComments]);
 
     if (postLoading) {
         return <Post isLoading={postLoading} isFullPost/>
     }
+    const updateData = (comments) => {
+        setComments(comments)
+    };
 return (
     <React.Fragment>
         <Post
@@ -67,8 +75,9 @@ return (
             user={data.user}
             createdAt={data.createdAt}
             viewsCount={data.viewsCount}
-            commentsCount={data.commentCount}
+            commentsCount={counterComments}
             tags={data.tags}
+            postLikes={likes}
             isFullPost
         >
             <ReactMarkdown children={data.text}/>
@@ -78,7 +87,7 @@ return (
             isLoading={commentsLoading}
             isAuth={Boolean(userData)}
         >
-            {Boolean(userData) ? <Index user={user}/> : ''}
+            {Boolean(userData) ? <Index user={user} updateData={updateData}/> : ''}
         </CommentsBlock>
     </React.Fragment>
 );

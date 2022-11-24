@@ -1,4 +1,6 @@
 import PostModel from '../model/post.js'
+import LikeModel from "../model/likes.js";
+import mongoose from "mongoose";
 
 export const getLastTags = async (req, res) => {
     try {
@@ -94,7 +96,6 @@ export const remove = (req, res) => {
 export const update = async (req, res) => {
     try{
         const postId = req.params.id;
-
         await PostModel.updateOne(
             {
             _id: postId
@@ -111,5 +112,69 @@ export const update = async (req, res) => {
             });
     } catch (error) {
         res.status(500).json({message: "Failed to update article"});
+    }
+};
+
+export const toggle_like = async (req, res) => {
+    try{
+        const postId = req.params.id;
+        if(!mongoose.Types.ObjectId.isValid(postId)) {
+            return res.status(400).send({
+                message: 'Invalid post id',
+                data: {}
+            })
+        } else {
+            await PostModel.findOne({_id: postId}).then(async (post) => {
+                if(!post) {
+                    return res.status(500).json({message: "Failed to get article"});
+                } else {
+                    let currentUserId = req.userId;
+                    LikeModel.findOne({
+                        post_id: postId,
+                        user_id: currentUserId
+                    }).then(async (post_like) => {
+                        try{
+                            if(!post_like) {
+                                let postLikeDoc = new LikeModel({
+                                    post_id: postId,
+                                    user_id: currentUserId
+                                });
+                                let likeData = await postLikeDoc.save();
+                                await PostModel.updateOne({
+                                    _id: postId,
+                                }, {
+                                    $push:{postLikes: likeData._id}
+                                });
+                                return res.status(200).send({
+                                    message: `Like successfully added`,
+                                    data: {}
+                                });
+                            } else {
+                                await LikeModel.deleteOne({
+                                    _id: post_like._id
+                                });
+                                await PostModel.updateOne({
+                                    _id: post_like.post_id,
+                                }, {
+                                    $pull:{postLikes: post_like._id}
+                                });
+                                return res.status(200).send({
+                                    message: `Like successfully removed`,
+                                    data: {}
+                                });
+                            }
+                        } catch (error) {
+                            return res.status(500).json({message: error.message});
+                        }
+
+                    }).catch((error) => {
+                        return res.status(500).json({message: error.message});
+                    })
+                }
+
+            })
+        }
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 };

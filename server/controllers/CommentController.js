@@ -30,9 +30,8 @@ export const getAllComments = async (req, res) => {
             if (!doc) {
                 return res.status(404).json({message: "Comments not found"});
             }
-            res.json(doc)
+            res.json(doc);
         }).populate('user');
-
     } catch (error) {
         res.status(500).json({message: "Failed to get comments"});
     }

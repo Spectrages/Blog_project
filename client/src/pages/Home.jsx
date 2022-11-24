@@ -9,6 +9,7 @@ import {TagsBlock} from '../components/TagsBlock';
 import {CommentsBlock} from '../components/CommentsBlock';
 import {fetchPosts, fetchTags} from "../redux/slices/posts";
 import {fetchLogin} from "../redux/slices/auth";
+import axios from "../axios";
 
 export const Home = () => {
 
@@ -18,6 +19,7 @@ export const Home = () => {
     const {posts, tags} = useSelector(state => state.posts);
     const isPostLoading = posts.status === 'loading';
     const isTagsLoading = tags.status === 'loading';
+
     useEffect(() => {
         dispatch(fetchLogin());
         dispatch(fetchPosts());
@@ -34,13 +36,13 @@ export const Home = () => {
     };
 
     const popularPosts = (posts) => {
-        if(posts.length > 0) {
+        if (posts.length > 0) {
             let copy = Object.assign([], posts);
             copy.sort((a, b) => a.viewsCount < b.viewsCount);
             return copy;
         }
     };
-
+//process.env.REACT_APP_API_URL
     return (
         <React.Fragment>
             <Tabs
@@ -63,8 +65,10 @@ export const Home = () => {
                             user={obj.user}
                             createdAt={obj.createdAt}
                             viewsCount={obj.viewsCount}
-                            commentsCount={obj.commentCount}
+                            commentsCount={0}
                             tags={obj.tags}
+                            postLikes={obj.postLikes}
+                            authUser = {userData}
                             isEditable={userData?._id === obj.user?._id}
                         />)).reverse()
                         :
@@ -76,8 +80,10 @@ export const Home = () => {
                                 user={obj.user}
                                 createdAt={obj.createdAt}
                                 viewsCount={obj.viewsCount}
-                                commentsCount={obj.commentCount}
+                                commentsCount={0}
                                 tags={obj.tags}
+                                postLikes={obj.postLikes}
+                                authUser = {userData}
                                 isEditable={userData?._id === obj.user?._id}
                             />))
                     }

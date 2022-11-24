@@ -18,7 +18,6 @@ export const fetchRemovePost = createAsyncThunk('posts/fetchRemovePost', async (
 
 export const fetchComments = createAsyncThunk('posts/fetchComments', async (id) => {
     const {data} = await axios.get(`/posts/${id}/get-comment`);
-    console.log(data);
     return data
 });
 

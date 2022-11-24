@@ -7,21 +7,31 @@ import Button from "@mui/material/Button";
 import axios from "../../axios";
 import {useParams} from "react-router-dom";
 
-export const Index = ({user}) => {
+export const Index = ({user, updateData}) => {
     const {id} = useParams();
     const [text, setText] = useState('');
-    console.log(user)
+
     const onSubmit = async () => {
         try {
             const fields = {
                 text
             };
             setText('');
-            return await axios.post(`/posts/${id}/add-comment`, fields);
+            await axios.post(`/posts/${id}/add-comment`, fields);
+            return axios.get(`/posts/${id}/get-comment`)
+                .then((response) => {
+                    updateData(response.data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert("Error getting comments");
+                });
         } catch (error) {
             alert('Error posting comment')
         }
     };
+
+
     return (
         <>
             <div className={styles.root}>

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import {Link} from "react-router-dom";
 
@@ -11,8 +13,9 @@ import styles from './Post.module.scss';
 import {UserInfo} from '../UserInfo';
 import {PostSkeleton} from './Skeleton';
 import {useDispatch} from "react-redux";
-import {fetchRemovePost} from "../../redux/slices/posts";
+import {fetchRemovePost, fetchPosts} from "../../redux/slices/posts";
 import {logout} from "../../redux/slices/auth";
+import axios from "../../axios";
 
 
 export const Post = ({
@@ -24,10 +27,12 @@ export const Post = ({
                          viewsCount,
                          commentsCount,
                          tags,
+                         postLikes,
                          children,
                          isFullPost,
                          isLoading,
                          isEditable,
+                         authUser,
                      }) => {
 
     const dispatch = useDispatch();
@@ -39,6 +44,16 @@ export const Post = ({
         if(window.confirm('Are you sure you want to delete post?')){
             dispatch(fetchRemovePost(_id));
         }
+    };
+    const toggle_like = () => {
+        axios.post(`/posts/${_id}/toggle-like`)
+            .then((response) => {
+                return response.data
+            })
+            .catch((error) => {
+                console.error(error);
+                alert("Error added like");
+            });
     };
 
     return (
@@ -84,6 +99,13 @@ export const Post = ({
                         <li>
                             <CommentIcon/>
                             <span>{commentsCount}</span>
+                        </li>
+                        <li>
+                            <FavoriteIcon
+                                onClick={() => toggle_like()}
+                                sx={{ color: '#FF0000' }}
+                            />
+                            <span>{postLikes}</span>
                         </li>
                     </ul>
                 </div>
