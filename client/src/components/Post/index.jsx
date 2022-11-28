@@ -7,6 +7,7 @@ import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import { red } from '@mui/material/colors';
 import {Link} from "react-router-dom";
 
 import styles from './Post.module.scss';
@@ -34,6 +35,16 @@ export const Post = ({
                          isEditable,
                          authUser,
                      }) => {
+    const primary = red[500];
+    const checkUserLike = (user_id, likesArray) => {
+        let toggle = false;
+        likesArray.map((item) => {
+            if(item === user_id){
+                toggle = true;
+            }
+        });
+        return toggle;
+    };
 
     const dispatch = useDispatch();
     if (isLoading) {
@@ -45,6 +56,7 @@ export const Post = ({
             dispatch(fetchRemovePost(_id));
         }
     };
+
     const toggle_like = () => {
         axios.post(`/posts/${_id}/toggle-like`)
             .then((response) => {
@@ -101,11 +113,8 @@ export const Post = ({
                             <span>{commentsCount}</span>
                         </li>
                         <li>
-                            <FavoriteIcon
-                                onClick={() => toggle_like()}
-                                sx={{ color: '#FF0000' }}
-                            />
-                            <span>{postLikes}</span>
+                            {checkUserLike(authUser._id, postLikes) ? <FavoriteIcon sx={{color: primary}}/> : <FavoriteBorderOutlinedIcon />}
+                            <span>{postLikes?.length || 0}</span>
                         </li>
                     </ul>
                 </div>

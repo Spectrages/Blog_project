@@ -143,7 +143,7 @@ export const toggle_like = async (req, res) => {
                                 await PostModel.updateOne({
                                     _id: postId,
                                 }, {
-                                    $push:{postLikes: likeData._id}
+                                    $push:{postLikes: likeData.user_id}
                                 });
                                 return res.status(200).send({
                                     message: `Like successfully added`,

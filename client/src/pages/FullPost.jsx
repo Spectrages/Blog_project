@@ -20,7 +20,6 @@ export const FullPost = () => {
     const {id} = useParams();
     const userData = useSelector(state => Boolean(state.auth.data));
     const dispatch = useDispatch();
-    console.log(likes);
 
     useEffect(() => {
         axios.get(`/auth/me`)
@@ -36,7 +35,7 @@ export const FullPost = () => {
         axios.get(`/posts/${id}`)
             .then((response) => {
                 setData(response.data);
-                setLikes(response.data.postLikes.length)
+                setLikes(response.data.postLikes);
                 setPostLoading(false);
             })
             .catch((error) => {
@@ -78,6 +77,7 @@ return (
             commentsCount={counterComments}
             tags={data.tags}
             postLikes={likes}
+            authUser={user}
             isFullPost
         >
             <ReactMarkdown children={data.text}/>
